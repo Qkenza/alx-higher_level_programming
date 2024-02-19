@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-'''Module for BaseGeometry class.'''
+"""Create an empty class"""
 
 
 class BaseGeometry:
-    '''A BaseGeometry class.'''
+    """Represent base geometry."""
     pass
