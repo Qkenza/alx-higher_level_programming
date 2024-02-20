@@ -1,40 +1,40 @@
 #!/usr/bin/python3
-""" module """
-
+"""
+reads stdin line by line and computes metrics
+"""
 import sys
 
-
-counter = 0
-data = {"File size": 0, "200": 0, "301": 0, "400": 0,
-        "401": 0, "403": 0, "404": 0, "405": 0, "500": 0}
-globaldata = []
-
-
+file_size = 0
+status_tally = {"200": 0, "301": 0, "400": 0, "401": 0,
+                "403": 0, "404": 0, "405": 0, "500": 0}
+i = 0
 try:
     for line in sys.stdin:
-        if counter == 10:
-            counter = 0
-            for key, value in globaldata[0].items():
-                if value == 0:
+        tokens = line.split()
+        if len(tokens) >= 2:
+            a = i
+            if tokens[-2] in status_tally:
+                status_tally[tokens[-2]] += 1
+                i += 1
+            try:
+                file_size += int(tokens[-1])
+                if a == i:
+                    i += 1
+            except FileNotFoundError:
+                if a == i:
                     continue
-                print(key+": "+str(value))
-                sys.stdout.flush()
-        counter += 1
-        if counter == 1:
-            globaldata.insert(0, data.copy())
-        line = line.rstrip()
-        globaldata[0]["File size"] += int(line.split()[-1])
-        globaldata[0][line.split()[-2]] += 1
-    if counter > 0:
-        for key, value in globaldata[0].items():
-            if value == 0:
-                continue
-            print(key+": "+str(value))
-            sys.stdout.flush()
-except KeyboardInterrupt as e:
-    for key, value in globaldata[0].items():
-        if value == 0:
-            continue
-        print(key+": "+str(value))
-        sys.stdout.flush()
-    print(e)
+        if i % 10 == 0:
+            print("File size: {:d}".format(file_size))
+            for key, value in sorted(status_tally.items()):
+                if value:
+                    print("{:s}: {:d}".format(key, value))
+    print("File size: {:d}".format(file_size))
+    for key, value in sorted(status_tally.items()):
+        if value:
+            print("{:s}: {:d}".format(key, value))
+
+except KeyboardInterrupt:
+    print("File size: {:d}".format(file_size))
+    for key, value in sorted(status_tally.items()):
+        if value:
+            print("{:s}: {:d}".format(key, value))
