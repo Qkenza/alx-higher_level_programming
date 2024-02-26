@@ -1,23 +1,23 @@
 #!/usr/bin/python3
-"""Class Square"""
+'''Module for Square class.'''
 from models.rectangle import Rectangle
 
 
 class Square(Rectangle):
-    """Class Square that inherite from Rectangle."""
-    def __init__(self, size, x=0, y=0, id=None):
-        """This initializes a new Square.
+    '''A Square class.'''
 
-        Args:
-            size (int): The size of the new Square.
-            x (int): The x coordinate of the new Square.
-            y (int): The y coordinate of the new Square.
-            id (int): The id of the new Square.
-        """
+    def __init__(self, size, x=0, y=0, id=None):
+        '''Constructor.'''
         super().__init__(size, size, x, y, id)
+
+    def __str__(self):
+        '''Returns string info about this square.'''
+        return '[{}] ({}) {}/{} - {}'.\
+            format(type(self).__name__, self.id, self.x, self.y, self.width)
 
     @property
     def size(self):
+        '''Size of this square.'''
         return self.width
 
     @size.setter
@@ -25,39 +25,25 @@ class Square(Rectangle):
         self.width = value
         self.height = value
 
-    def update(self, *args, **kwargs):
-        """Update the class Square by adding the public method def update(...)
-        that assigns attrs.
-        Args:
-            *args: is the list of arguments - no-keyworded arguments.
-                1st argument should be the id attribute
-                2nd argument should be the size attribute
-                3rd argument should be the x attribute
-                4th argument should be the y attribute
-            **kwargs: can be thought of as a double pointer to a dictionary:
-                      key/value (keyworded arguments)
-        """
-        if args:
-            arg_name = ["id", "size", "x", "y"]
-            for i, arg in enumerate(args):
-                setattr(self, arg_name[i], arg)
-        else:
-            for key, value in kwargs.items():
-                setattr(self, key, value)
+    def __update(self, id=None, size=None, x=None, y=None):
+        '''Internal method that updates instance attributes via */**args.'''
+        if id is not None:
+            self.id = id
+        if size is not None:
+            self.size = size
+        if x is not None:
+            self.x = x
+        if y is not None:
+            self.y = y
 
-    def __str__(self):
-        """Returns [Square] (<id>) <x>/<y> - <size>"""
-        return "[Square] ({}) {}/{} - {}".format(self.id,
-                                                 self.x, self.y,
-                                                 self.size)
+    def update(self, *args, **kwargs):
+        '''Updates instance attributes via no-keyword & keyword args.'''
+        if args:
+            self.__update(*args)
+        elif kwargs:
+            self.__update(**kwargs)
 
     def to_dictionary(self):
-        """Update the class Square by adding the public method
-        def to_dictionary(self): that returns the dictionary representation
-        of a Square."""
-        return {
-            'id': self.id,
-            'size': self.width,
-            'x': self.x,
-            'y': self.y
-        }
+        '''Returns dictionary representation of this class.'''
+        return {"id": self.id, "size": self.width,
+                "x": self.x, "y": self.y}
